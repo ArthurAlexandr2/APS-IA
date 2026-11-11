@@ -234,11 +234,7 @@ class Interface:
         ttk.Label(topo, text="Dimensão N:").pack(side="left")
         self.n = tk.StringVar(value="8")
         ttk.Entry(topo, textvariable=self.n, width=6).pack(side="left", padx=5)
-        ttk.Label(topo, text="Seed (opcional):").pack(side="left")
-        self.seed = tk.StringVar()
-        ttk.Entry(topo, textvariable=self.seed, width=12).pack(side="left", padx=5)
         ttk.Button(topo, text="Gerar mundo", command=self.gerar).pack(side="left", padx=4)
-        ttk.Button(topo, text="Outro cenário", command=lambda: self.gerar(True)).pack(side="left")
         barra = ttk.Frame(raiz, padding=8)
         barra.pack(fill="x")
         self.resolver_botao = ttk.Button(barra, text="Resolver A*", command=self.resolver)
@@ -285,21 +281,19 @@ class Interface:
             self.raiz.after_cancel(self.animacao)
             self.animacao = None
 
-    def gerar(self, outro=False):
+    def gerar(self):
         from tkinter import messagebox
         try:
             n = int(self.n.get())
             if not 2 <= n <= 50:
                 raise ValueError("Na interface, use uma dimensão entre 2 e 50.")
-            seed = random.SystemRandom().randrange(2**32) if outro or not self.seed.get().strip() else int(self.seed.get())
-            problema = gerar_mundo(n, seed)
+            problema = gerar_mundo(n)
         except ValueError as erro:
             messagebox.showerror("Entrada inválida", str(erro))
             return
         self.parar()
         self.cancelar.set()
         self.geracao += 1
-        self.seed.set(str(seed))
         self.problema = problema
         self.resultado = None
         self.buscando = False

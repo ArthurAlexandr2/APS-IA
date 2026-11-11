@@ -162,7 +162,7 @@ Exemplo de uso dentro de Python:
 ```python
 from main import AEstrela, EstadoEntrega, gerar_mundo
 
-problema = gerar_mundo(5, seed=42)
+problema = gerar_mundo(5)
 state = EstadoEntrega(problema, problema.inicial)
 algorithm = AEstrela()
 result = algorithm.search(state)
@@ -181,7 +181,7 @@ expandidos e o tempo permanecem disponíveis.
 
 ## Geração aleatória
 
-`gerar_mundo(N, seed)` usa seu próprio `random.Random(seed)` e exige `N >= 2`.
+`gerar_mundo(N)` cria um cenário aleatório e exige `N >= 2`.
 Uma lista embaralhada de células fornece três posições distintas para agente,
 pacote e destino. Os obstáculos são sorteados entre as demais células.
 
@@ -193,15 +193,14 @@ pacote e destino. Os obstáculos são sorteados entre as demais células.
 Arredondar para baixo permite zero obstáculos ou pedágios em grids pequenos.
 O sorteio é sem reposição. Pedágios podem coincidir com agente, pacote ou destino,
 mas nunca com obstáculos. Nenhuma conectividade é imposta: cenários sem solução
-são possíveis. A mesma dimensão e seed reproduzem o mundo na mesma versão do
-Python. Detalhes de embaralhamento podem variar entre versões do interpretador.
+são possíveis. O parâmetro opcional `seed` fica restrito aos testes automatizados
+e às demonstrações internas reproduzíveis; não aparece na interface.
 
 ## Interface
 
-Informe N e uma seed inteira opcional e clique em **Gerar mundo**. Uma seed
-vazia é sorteada e exibida para permitir reprodução. **Outro cenário** escolhe
-uma nova seed. A interface aceita dimensões entre 2 e 50 para limitar o desenho;
-a função de geração não impõe esse máximo.
+Informe **Dimensão N** e clique em **Gerar mundo**. Cada clique cria um novo
+cenário aleatório. A interface aceita dimensões entre 2 e 50 para limitar o
+desenho; a função de geração não impõe esse máximo.
 
 Clique em **Resolver A*** para obter o plano, exibido na lista lateral com o
 custo de cada ação. A busca roda em uma thread para manter a janela responsiva;
@@ -230,7 +229,7 @@ Resultados obtidos executando o código com Python 3.14.4:
 1. Mundo fixo 3×3 sem obstáculos ou pedágios, agente `(0, 0)`, pacote `(1, 1)`
    e destino `(2, 2)`: plano `BAIXO, DIREITA, PEGAR, BAIXO, DIREITA, ENTREGAR`;
    custo **6**, **6 ações**, **8 estados expandidos**.
-2. Na interface, N **5**, seed **42**: agente `(3, 1)`, pacote `(2, 2)` e
+2. Na demonstração interna, N **5**: agente `(3, 1)`, pacote `(2, 2)` e
    destino `(1, 4)`. Obstáculos `{(1, 0), (1, 1), (3, 3), (3, 4)}` e pedágio
    `{(4, 1)}`. Plano `CIMA, DIREITA, PEGAR, CIMA, DIREITA, DIREITA, ENTREGAR`;
    custo **7**, **7 ações**, **10 estados expandidos**.
@@ -240,9 +239,9 @@ Resultados obtidos executando o código com Python 3.14.4:
    destino `(1, 4)`. Sem pedágios, o custo é **6**. Com pedágios em `(1, 1)`,
    `(1, 2)` e `(1, 3)`, o plano ótimo desvia e custa **8**.
 
-Os cenários fixos estão nos testes internos; o segundo exemplo pode ser
-reproduzido diretamente pelos campos da interface. `python main.py --demo`
-executa os três primeiros exemplos e imprime operações, estados, custos e tempos.
+Os testes e as demonstrações usam valores fixos internamente para serem
+reproduzíveis. `python main.py --demo` executa os três primeiros exemplos e
+imprime operações, estados, custos e tempos.
 Os tempos variam conforme a máquina e a execução. Para consultar o primeiro
 no PowerShell sem abrir a janela:
 
@@ -267,7 +266,7 @@ o custo de entrada dos nós, a identidade por `env()`, a busca a partir de um
 nó explícito, a impressão do plano, `result.g` e o resultado sem solução.
 
 A sintaxe foi conferida por `ast.parse`. A interface foi aberta e exercitada:
-geração, reprodução por seed, resolução em thread, avanço, animação, reinício,
+geração, resolução em thread, avanço, animação, reinício,
 conclusão do plano, dimensões 2, 5, 8 e 15 e mensagem de ausência de solução.
 
 ## Decisões e limitações
